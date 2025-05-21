@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   FlatList,
@@ -12,12 +12,22 @@ import CalendarStrip from "../components/CalendarStrip";
 import GoalCard from "../components/GoalCard";
 import TaskChecklist from "../components/TaskChecklist";
 import FAB from "../components/FAB";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import GoalDetailsSheet from "../components/GoalDetailsSheet";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const sheetRef = useRef<BottomSheet>(null);
+  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [sheetIndex, setSheetIndex] = useState(-1);
+
+  const openGoalSheet = (goal: React.SetStateAction<null>) => {
+    setSelectedGoal(goal);
+    sheetRef.current?.expand();
+  };
 
   // Dummy data
   const goals = [
@@ -52,7 +62,11 @@ export default function HomeScreen() {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <GoalCard goal={item} />}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => openGoalSheet(item)}>
+            <GoalCard goal={item} />
+          </TouchableOpacity>
+        )}
         contentContainerStyle={styles.goalList}
         style={{
           flexGrow: 0,
@@ -61,6 +75,27 @@ export default function HomeScreen() {
       <Text style={styles.section}>things to do</Text>
       <TaskChecklist tasks={tasks} />
       <FAB />
+
+      <BottomSheet
+        backgroundStyle={{
+          backgroundColor: "#17191A",
+        }}
+        backdropComponent={({ style }) =>
+          sheetIndex >= 0 ? (
+            <View style={[style, { backgroundColor: "rgba(0, 0, 0, 0.7)" }]} />
+          ) : null
+        }
+        onChange={(index) => setSheetIndex(index)}
+        enableDynamicSizing={false}
+        enablePanDownToClose
+        ref={sheetRef}
+        index={-1}
+        snapPoints={["70%"]}
+      >
+        <BottomSheetView style={{ flex: 1, padding: 20 }}>
+          {selectedGoal && <GoalDetailsSheet goal={selectedGoal} />}
+        </BottomSheetView>
+      </BottomSheet>
     </View>
   );
 }
