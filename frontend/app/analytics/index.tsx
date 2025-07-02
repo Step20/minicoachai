@@ -1,10 +1,15 @@
 import HeaderTopBack from "@/components/HeaderTopBack";
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Platform } from "react-native";
 
 export default function AnalyticsScreen() {
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={[
+        styles.container,
+        { paddingTop: Platform.OS === "ios" ? 60 : 30 },
+      ]}
+    >
       <HeaderTopBack title="Analytics" />
 
       <View style={styles.grid}>

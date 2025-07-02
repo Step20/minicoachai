@@ -1,6 +1,14 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// app/welcome.tsx
 import { useRouter } from "expo-router";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Image,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Welcome() {
   const router = useRouter();
@@ -12,11 +20,21 @@ export default function Welcome() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to MiniCoachAI 👋</Text>
-      <Text style={styles.sub}>
-        Your daily goals, reminders, and AI motivation — all in one place.
+      <Image
+        resizeMode="contain"
+        source={require("../assets/images/logo-white.png")}
+        style={{ width: 150, height: 150 }}
+      />
+      <Text style={styles.logo}>MiniCoachAI</Text>
+
+      <Text style={styles.heading}>
+        Your new way to keep up in life. Get your coach!
       </Text>
-      <TouchableOpacity style={styles.button} onPress={handleContinue}>
+      <Text style={styles.subtext}>
+        Before you start look at the new updates from the devs
+      </Text>
+
+      <TouchableOpacity onPress={handleContinue} style={styles.button}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
@@ -26,17 +44,38 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#111",
-    padding: 24,
+    backgroundColor: "#0F0F0F",
     justifyContent: "center",
+    alignItems: "center",
+    paddingTop: Platform.OS === "ios" ? 50 : 20,
   },
-  title: { fontSize: 28, fontWeight: "600", color: "#fff", marginBottom: 10 },
-  sub: { fontSize: 16, color: "#bbb", marginBottom: 40 },
+  logo: { fontSize: 25, color: "#fff", fontWeight: "bold", marginBottom: 20 },
+  heading: {
+    fontSize: 25,
+    color: "#fff",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 6,
+    marginTop: 100,
+    width: "70%",
+  },
+  subtext: {
+    color: "#ccc",
+    opacity: 0.5,
+    textAlign: "center",
+    marginBottom: 30,
+    fontSize: 19,
+    fontWeight: "300",
+    width: "75%",
+  },
   button: {
     backgroundColor: "#FFB2E3",
-    padding: 14,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 25,
     alignItems: "center",
+    bottom: 35,
+    width: "90%",
+    position: "absolute",
   },
-  buttonText: { fontSize: 16, fontWeight: "500", color: "#000" },
+  buttonText: { color: "#17191A", fontWeight: "bold", fontSize: 20 },
 });

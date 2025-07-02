@@ -5,12 +5,25 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 export default function FAB() {
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const modalRef = useRef(null); // <-- add this
   const [sheetType, setSheetType] = useState("task");
   const [sheetIndex, setSheetIndex] = useState(-1);
 
-  const openSheet = (type: "task" | "goal") => {
-    setSheetType(type);
+  const openSheet = (createType: "task" | "goal") => {
+    setSheetType(createType);
     bottomSheetRef.current?.expand();
+  };
+
+  const handleCreate = (entry: any) => {
+    bottomSheetRef.current?.close(); // close modal
+  };
+
+  // Reset form when sheet closes
+  const handleSheetChange = (index: number) => {
+    setSheetIndex(index);
+    if (index === -1 && modalRef.current) {
+      modalRef.current.resetForm();
+    }
   };
 
   return (
@@ -28,18 +41,15 @@ export default function FAB() {
             <View style={[style, { backgroundColor: "rgba(0, 0, 0, 0.7)" }]} />
           ) : null
         }
-        onChange={(index) => setSheetIndex(index)}
+        onChange={handleSheetChange}
         enableDynamicSizing={false}
         enablePanDownToClose
         ref={bottomSheetRef}
         index={-1}
         snapPoints={["70%"]}
       >
-        <BottomSheetView style={{ flex: 1, padding: 20 }}>
-          <CreateEntryModal
-            type={sheetType}
-            onCreate={() => bottomSheetRef.current?.close()}
-          />
+        <BottomSheetView style={{ flex: 1, padding: 20, height: "100%" }}>
+          <CreateEntryModal ref={modalRef} onCreate={handleCreate} />
         </BottomSheetView>
       </BottomSheet>
     </>
